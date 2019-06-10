@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Pip
+Pipfile.lock
+
+#VScode
+.vscode
