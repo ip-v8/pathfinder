@@ -1,12 +1,13 @@
 import networkx as nx
 import random
 import sys
+import library
 
 # Variables for setting up.
 ROUNDS = 1000000
 NODE_TARGET = 10000
 ENTRY_NODES = 20
-TARGET_EDGES = 20
+TARGET_EDGES = 50
 
 # Do not change below this line.
 currentNodes = 0
@@ -24,46 +25,29 @@ for i in range(0, ENTRY_NODES - 1):
   currentNodes += 1
 
 while cycle < ROUNDS:
-  # Add a new node.
-  if currentNodes < NODE_TARGET and random.random() <= 0.7:
+  # Add a new node with a change of 10%.
+  if currentNodes < NODE_TARGET and random.random() <= 0.1:
     G.add_node(currentNodes)
     G.add_edge(currentNodes, random.randint(0, ENTRY_NODES - 1))
     currentNodes += 1
 
-  # Add a new connection
-  for i in range(0, currentNodes - 1):
-    # There is a 90% change per node of not making a new connection.
-    if random.random() <= 0.9:
-      continue
-
+  # Add 10 new connections every round
+  for i in random.sample(range(0, currentNodes - 1), 10):
     # If the node already has enough connection skip it.
     if len(list(G.neighbors(i))) >= TARGET_EDGES:
       continue
 
-    ls = list(G.neighbors(i))
-    top = (i, -1)
-    for j in range(0, 4):
-      if(len(ls) == 0):
-        continue
+    chosen = i
+    for i in range(0, 5):
+      res = library.getFittest(G, chosen, ENTRY_NODES)
+      if res == -1:
+        break
+      chosen = res
 
-      best = (top[0], -1)
-
-      for item in ls:
-        neigh = len(list(G.neighbors(item)))
-
-        if best[1] <= neigh:
-          best = (item, neigh)
-
-      if(top[1] < best[1]):
-        continue
-
-      top = best
-      ls = list(G.neighbors(top[0]))
-
-    if top[0] == i or top[0] in list(G.neighbors(i)):
+    if chosen == i or chosen in (G.neighbors(i)):
       continue
 
-    G.add_edge(i, top[0])
+    G.add_edge(i, chosen)
 
   # Report the percentage
   if cycle % 500 == 0:
