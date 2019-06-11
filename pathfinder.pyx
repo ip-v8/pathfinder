@@ -9,8 +9,10 @@ ENTRY_NODES = 20
 TARGET_EDGES = 20
 
 # Do not change below this line.
-currentNodes = 0
-cycle = 0
+cdef int currentNodes = 0
+cdef int cycle = 0
+cdef int i = 0
+cdef int j = 0
 
 G = nx.Graph()
 for i in range(0, ENTRY_NODES - 1):
