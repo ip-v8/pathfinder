@@ -67,6 +67,9 @@ while cycle < ROUNDS:
 
   # Report the percentage
   if cycle % 500 == 0:
+    if round((cycle / ROUNDS) * 100, 2) == 1:
+        exit()
+
     sys.stdout.write("\rBuilding graph %s%%" %
                      str(round((cycle / ROUNDS) * 100, 2))
                      )
@@ -80,3 +83,4 @@ print("Total edges: ", len(G.edges()))
 print("Average degree: ", sum(i[1] for i in G.degree()) / len(G.nodes))
 print("Average clustering: ", nx.average_clustering(G))
 print("Average shortest path: ", nx.average_shortest_path_length(G))
+
