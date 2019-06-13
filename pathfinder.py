@@ -1,7 +1,6 @@
 import networkx as nx
 import random
 import sys
-import library
 
 # Variables for setting up.
 ROUNDS = 1000000
@@ -12,6 +11,36 @@ TARGET_EDGES = 50
 # Do not change below this line.
 currentNodes = 0
 cycle = 0
+
+
+def neighborsNoEntry(G: nx.Graph, i: int, entries: int):
+  return list(filter(lambda n: n > entries - 1, list(G.neighbors(i))))
+
+
+def getFittest(G: nx.Graph, n: int, entries: int):
+  if len(neighborsNoEntry(G, n, entries)) == 0:
+    return -1
+
+  total = sum(len(neighborsNoEntry(G, i, entries))
+              for i in neighborsNoEntry(G, n, entries))
+
+  if(total == 0):
+    return -1
+
+  edgeNeighbors = map(lambda i: (
+      i, len(neighborsNoEntry(G, i, entries))/total), neighborsNoEntry(G, n, entries))
+  sortedList = sorted(edgeNeighbors, key=lambda i: i[1])
+
+  chance = random.random()
+
+  for i in range(len(sortedList) - 1):
+    if(sortedList[i][1] >= chance):
+      return sortedList[i][0]
+
+    chance -= sortedList[i][1]
+
+  return -1
+
 
 G = nx.Graph()
 for i in range(0, ENTRY_NODES - 1):
@@ -39,7 +68,7 @@ while cycle < ROUNDS:
 
     chosen = i
     for i in range(0, 5):
-      res = library.getFittest(G, chosen, ENTRY_NODES)
+      res = getFittest(G, chosen, ENTRY_NODES)
       if res == -1:
         break
       chosen = res
